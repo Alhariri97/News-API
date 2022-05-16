@@ -14,9 +14,11 @@ describe("GET /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toBeInstanceOf(Array);
-        expect(body).toHaveLength(3);
-        body.forEach((topic) => {
+        expect(body).toBeInstanceOf(Object);
+        expect(body.topics).toBeInstanceOf(Array);
+        expect(body.topics).toHaveLength(3);
+        body.topics.forEach((topic) => {
+          expect(typeof topic).toBe("object");
           expect(topic).toEqual(
             expect.objectContaining({
               slug: expect.any(String),
@@ -32,7 +34,6 @@ describe("GET /api/topics", () => {
       .get("/api/topicslsl")
       .expect(404)
       .then((response) => {
-        console.log(response.body.msg);
         expect(response.body.msg).toBe("invalid path / page Not found");
       });
   });
