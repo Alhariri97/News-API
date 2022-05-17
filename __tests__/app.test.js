@@ -134,7 +134,7 @@ describe("PATCH /api/article:article_id", () => {
       });
   });
 
-  it.only("status:400 : returns a bad request messsage when paased an emopty votes obj", () => {
+  it("status:400 : returns a bad request messsage when paased an emopty votes obj", () => {
     return request(app)
       .patch("/api/articles/3")
       .send({})
