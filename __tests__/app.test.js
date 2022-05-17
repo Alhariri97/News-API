@@ -124,7 +124,7 @@ describe("PATCH /api/article:article_id", () => {
       });
   });
 
-  it("status:400 : returns a bad request messsage when paased an invalied id type", () => {
+  it("status:400 : returns a bad request messsage when paased an invalied vote value", () => {
     return request(app)
       .patch("/api/articles/3")
       .send({ inc_votes: "hello" })
@@ -134,13 +134,13 @@ describe("PATCH /api/article:article_id", () => {
       });
   });
 
-  // it("status:400 : returns a bad request messsage when paased an invalied id type", () => {
-  //   return request(app)
-  //     .patch("/api/articles/3")
-  //     .send({  })
-  //     .expect(400)
-  //     .then((response) => {
-  //       expect(response.body.msg).toBe("bad request");
-  //     });
-  // });
+  it.only("status:400 : returns a bad request messsage when paased an emopty votes obj", () => {
+    return request(app)
+      .patch("/api/articles/3")
+      .send({})
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("bad request");
+      });
+  });
 });
