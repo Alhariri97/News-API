@@ -155,7 +155,7 @@ describe("GET /api/users", () => {
         expect(body.users).toBeInstanceOf(Array);
         expect(body.users).toHaveLength(4);
         body.users.forEach((user) => {
-          expect(typeof user).toBe("object");
+          expect(user).toBeInstanceOf(Object);
           expect(user).toEqual(
             expect.objectContaining({
               username: expect.any(String),
