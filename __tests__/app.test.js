@@ -30,12 +30,12 @@ describe("GET /api/topics", () => {
       });
   });
 
-  test("status:404, Returns a {invalid path / page Not found} message when paased an invalid path", () => {
+  test("status:404, Returns a {Not found} message when paased an invalid path", () => {
     return request(app)
-      .get("/api/topicslsl")
+      .get("/api/topics/sls")
       .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe("invalid path / page Not found");
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
       });
   });
 });
@@ -49,29 +49,33 @@ describe("GET / api/aritcle:article_id", () => {
         expect(body).toBeInstanceOf(Object);
         expect(body.article).toBeInstanceOf(Array);
         expect(body.article).toHaveLength(1);
-        body.article.forEach((article) => {
-          expect(typeof article).toBe("object");
-          expect(article).toEqual(
-            expect.objectContaining({
-              article_id: expect.any(Number),
-              author: expect.any(String),
-              body: expect.any(String),
-              created_at: expect.any(String),
-              title: expect.any(String),
-              topic: expect.any(String),
-              votes: expect.any(Number),
-            })
-          );
+        expect(body.article[0]).toEqual({
+          article_id: 4,
+          title: "Student SUES Mitch!",
+          topic: "mitch",
+          author: "rogersop",
+          body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+          created_at: "2020-05-06T01:14:00.000Z",
+          votes: 0,
         });
       });
   });
 
-  it("status:404 : returns a bad request messsage when paased an invailid id", () => {
+  it("status:404 : returns a not found messsage when paased an invalid id ", () => {
     return request(app)
       .get("/api/articles/909090")
       .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+
+  it("status:400 : returns a bad request messsage when paased an invalied id type", () => {
+    return request(app)
+      .get("/api/articles/hello")
+      .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe("Invalid Id");
+        expect(response.body.msg).toBe("bad request");
       });
   });
 });
