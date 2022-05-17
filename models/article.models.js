@@ -2,10 +2,15 @@ const res = require("express/lib/response");
 const db = require("../db/connection.js");
 
 exports.selectArticleById = (article_id) => {
-  let queryString = "SELECT * FROM articles ";
+  let queryString = `SELECT articles.*, COUNT(comments) AS comment_count
+  FROM articles
+  LEFT JOIN comments
+  ON articles.article_id = comments.article_id
+ `;
 
   if (article_id) {
-    queryString += `WHERE article_id= $1;`;
+    queryString += ` WHERE articles.article_id = $1
+    GROUP BY articles.article_id`;
   }
   return db.query(queryString, [article_id]).then((response) => {
     if (!response.rows.length) {

@@ -49,15 +49,17 @@ describe("GET / api/aritcle:article_id", () => {
         expect(body).toBeInstanceOf(Object);
         expect(body.article).toBeInstanceOf(Array);
         expect(body.article).toHaveLength(1);
-        expect(body.article[0]).toEqual({
-          article_id: 4,
-          title: "Student SUES Mitch!",
-          topic: "mitch",
-          author: "rogersop",
-          body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
-          created_at: "2020-05-06T01:14:00.000Z",
-          votes: 0,
-        });
+        expect(body.article[0]).toEqual(
+          expect.objectContaining({
+            article_id: 4,
+            title: "Student SUES Mitch!",
+            topic: "mitch",
+            author: "rogersop",
+            body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+            created_at: "2020-05-06T01:14:00.000Z",
+            votes: 0,
+          })
+        );
       });
   });
 
@@ -76,6 +78,33 @@ describe("GET / api/aritcle:article_id", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe("bad request");
+      });
+  });
+
+  it("Status: 200; respond with an array has an object with a commetn_count key", () => {
+    return request(app)
+      .get("/api/articles/9")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeInstanceOf(Object);
+        expect(body.article).toBeInstanceOf(Array);
+        expect(body.article).toHaveLength(1);
+        expect(body.article[0]).toEqual(
+          expect.objectContaining({
+            article_id: 9,
+            author: "rogersop",
+            body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+            created_at: "2020-05-06T01:14:00.000Z",
+            title: "Student SUES Mitch!",
+            author: "butter_bridge",
+            body: "Well? Think about it.",
+            created_at: "2020-06-06T09:10:00.000Z",
+            title: "They're not exactly dogs, are they?",
+            topic: "mitch",
+            votes: 0,
+            comment_count: "2",
+          })
+        );
       });
   });
 });
