@@ -3,12 +3,16 @@ const express = require("express");
 const { getTopics } = require("./controllers/topics.controller");
 const {
   getArticleById,
-} = require("./controllers/getArticleById.controller.js");
+  patchArticleById,
+} = require("./controllers/article.controller.js");
 
 const app = express();
 
+app.use(express.json());
+
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
+app.patch("/api/articles/:article_id", patchArticleById);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Not Found" });

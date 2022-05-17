@@ -79,3 +79,67 @@ describe("GET / api/aritcle:article_id", () => {
       });
   });
 });
+
+describe("PATCH /api/article:article_id", () => {
+  const newVots = { inc_votes: 1 };
+  it("status:200 , return the new updated article  change by 1", () => {
+    return request(app)
+      .patch("/api/articles/4")
+      .send(newVots)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeInstanceOf(Object);
+        expect(body.article).toBeInstanceOf(Array);
+        expect(body.article).toHaveLength(1);
+        expect(body.article[0]).toEqual({
+          article_id: 4,
+          title: "Student SUES Mitch!",
+          topic: "mitch",
+          author: "rogersop",
+          body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+          created_at: "2020-05-06T01:14:00.000Z",
+          votes: 1,
+        });
+      });
+  });
+  it("status:200 , return the new updated article change by 300", () => {
+    return request(app)
+      .patch("/api/articles/4")
+      .send({ inc_votes: 300 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeInstanceOf(Object);
+        expect(body.article).toBeInstanceOf(Array);
+        expect(body.article).toHaveLength(1);
+        expect(body.article[0]).toEqual({
+          article_id: 4,
+          title: "Student SUES Mitch!",
+          topic: "mitch",
+          author: "rogersop",
+          body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+          created_at: "2020-05-06T01:14:00.000Z",
+          votes: 300,
+        });
+      });
+  });
+
+  it("status:200 , return the a not found message ", () => {
+    return request(app)
+      .patch("/api/articles/909090")
+      .send(newVots)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+
+  it("status:400 : returns a bad request messsage when paased an invalied id type", () => {
+    return request(app)
+      .patch("/api/articles/hello")
+      .send(newVots)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("bad request");
+      });
+  });
+});
