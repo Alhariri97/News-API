@@ -5,7 +5,6 @@ exports.getArticleById = (req, res, next) => {
 
   selectArticleById(article_id)
     .then((article) => {
-      console.log(article);
       res.status(200).send({ article });
     })
     .catch(next);
