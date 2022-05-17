@@ -144,3 +144,33 @@ describe("PATCH /api/article:article_id", () => {
       });
   });
 });
+
+describe("GET /api/users", () => {
+  it("Status:200 ; responds wiht an array of objects , each object should have a username ", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeInstanceOf(Object);
+        expect(body.users).toBeInstanceOf(Array);
+        expect(body.users).toHaveLength(4);
+        body.users.forEach((user) => {
+          expect(typeof user).toBe("object");
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
+  test("status:404, Returns a {Not found} message when paased an invalid path", () => {
+    return request(app)
+      .get("/api/users/ls")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+});
