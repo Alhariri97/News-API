@@ -6,6 +6,13 @@ const {
   patchArticleById,
 } = require("./controllers/article.controller.js");
 
+const {
+  sqlErrors,
+  costumErrors,
+  serverErrors,
+} = require("./controllers/errors.controller.js");
+
+const { getAllUsers } = require("./controllers/users.controller");
 const app = express();
 
 app.use(express.json());
@@ -13,25 +20,16 @@ app.use(express.json());
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.patch("/api/articles/:article_id", patchArticleById);
+app.get("/api/users", getAllUsers);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Not Found" });
 });
 
-app.use((err, req, res, next) => {
-  if (err.code === "22P02" || err.code === "23502") {
-    res.status(400).send({ msg: "bad request" });
-  } else {
-    next(err);
-  }
-});
+app.use(sqlErrors);
 
-app.use((err, req, res, next) => {
-  res.status(err.status).send({ msg: err.msg });
-});
+app.use(costumErrors);
 
-app.use((err, req, res) => {
-  res.status(500).send({ msg: "internal server error" });
-});
+app.use(serverErrors);
 
 module.exports = app;
