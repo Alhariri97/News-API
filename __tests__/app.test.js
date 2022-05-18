@@ -206,7 +206,6 @@ describe("GET /api/articels", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body).toBeInstanceOf(Object);
         expect(body.articles).toHaveLength(12);
         body.articles.forEach((article) => {
