@@ -14,6 +14,8 @@ const {
 } = require("./controllers/errors.controller.js");
 
 const { getAllUsers } = require("./controllers/users.controller");
+const { getAllComments } = require("./controllers/comments.controller");
+
 const app = express();
 
 app.use(express.json());
@@ -23,6 +25,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.patch("/api/articles/:article_id", patchArticleById);
 app.get("/api/users", getAllUsers);
 app.get("/api/articles", getAllArticles);
+app.get("/api/articles/:article_id/comments", getAllComments);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Not Found" });
