@@ -10,6 +10,7 @@ exports.costumErrors = (err, req, res, next) => {
   res.status(err.status).send({ msg: err.msg });
 };
 
-exports.serverErrors = (err, req, res) => {
+exports.serverErrors = (err, req, res, next) => {
+  console.log(err);
   res.status(500).send({ msg: "internal server error" });
 };
