@@ -207,9 +207,9 @@ describe("GET /api/articels", () => {
       .expect(200)
       .then(({ body }) => {
         console.log(body);
-        expect(body).toBeInstanceOf(Array);
-        expect(body).toHaveLength(12);
-        body.forEach((article) => {
+        expect(body).toBeInstanceOf(Object);
+        expect(body.articles).toHaveLength(12);
+        body.articles.forEach((article) => {
           expect(article).toBeInstanceOf(Object);
           expect.objectContaining({
             author: expect.any(String),
@@ -221,15 +221,6 @@ describe("GET /api/articels", () => {
             comment_count: expect.any(Number),
           });
         });
-      });
-  });
-
-  it("status:404, Returns a {Not found} message when paased an invalid path", () => {
-    return request(app)
-      .get("/api/articlesd")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not Found");
       });
   });
 });
