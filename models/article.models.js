@@ -1,4 +1,3 @@
-const res = require("express/lib/response");
 const db = require("../db/connection.js");
 
 exports.selectArticleById = (article_id) => {
@@ -28,6 +27,20 @@ exports.updateArticle = (article_id, inc_votes) => {
     if (!response.rows.length) {
       return Promise.reject({ status: 404, msg: "Not Found" });
     }
+    return response.rows;
+  });
+};
+
+exports.fetchAllArticles = () => {
+  const queryStr = `
+  SELECT articles.title, articles.title, articles.topic, articles.author, articles.votes, articles.article_id, articles.created_at,  COUNT(comments) AS comment_count
+  FROM articles 
+  LEFT JOIN comments 
+  ON articles.article_id = comments.article_id
+  GROUP BY articles.article_id
+  ORDER BY articles.created_at DESC;
+  `;
+  return db.query(queryStr).then((response) => {
     return response.rows;
   });
 };

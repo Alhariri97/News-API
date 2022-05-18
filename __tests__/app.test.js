@@ -20,12 +20,12 @@ describe("GET /api/topics", () => {
         expect(body.topics).toHaveLength(3);
         body.topics.forEach((topic) => {
           expect(typeof topic).toBe("object");
-          // expect(topic).toEqual(
-          expect.objectContaining({
-            slug: expect.any(String),
-            description: expect.any(String),
-          });
-          // );
+          expect(topic).toEqual(
+            expect.objectContaining({
+              slug: expect.any(String),
+              description: expect.any(String),
+            })
+          );
         });
       });
   });
@@ -193,6 +193,40 @@ describe("GET /api/users", () => {
   test("status:404, Returns a {Not found} message when paased an invalid path", () => {
     return request(app)
       .get("/api/users/ls")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+});
+
+describe("GET /api/articels", () => {
+  it("status:200, returns with all the articles ", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body).toBeInstanceOf(Array);
+        expect(body).toHaveLength(12);
+        body.forEach((article) => {
+          expect(article).toBeInstanceOf(Object);
+          expect.objectContaining({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+
+  it("status:404, Returns a {Not found} message when paased an invalid path", () => {
+    return request(app)
+      .get("/api/articlesd")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not Found");
