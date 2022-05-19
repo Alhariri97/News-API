@@ -273,7 +273,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 
 //
 
-describe("POST /api/articles/:article_id/comments", () => {
+describe.only("POST /api/articles/:article_id/comments", () => {
   it("Status:201: creates a comment and return the created comment", () => {
     const comment = {
       username: "butter_bridge",
@@ -292,7 +292,8 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(comment)
       .expect(201)
       .then(({ body }) => {
-        expect(body).toEqual(returned);
+        const { newComment } = body;
+        expect(newComment).toEqual(returned);
       });
   });
 
@@ -306,11 +307,12 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(comment)
       .expect(404)
       .then(({ body }) => {
+        console.log(body);
         expect(body.msg).toBe("Not Found");
       });
   });
 
-  it("Status 404: article_id not found", () => {
+  it.only("Status 404: article_id not found", () => {
     const comment = {
       username: "butter_bridge",
       body: "Good morning ",
