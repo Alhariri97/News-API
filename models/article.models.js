@@ -31,16 +31,44 @@ exports.updateArticle = (article_id, inc_votes) => {
   });
 };
 
-exports.fetchAllArticles = () => {
-  const queryStr = `
-  SELECT articles.title, articles.title, articles.topic, articles.author, articles.votes, articles.article_id, articles.created_at,  COUNT(comments) AS comment_count
+exports.fetchAllArticles = (order = "desc", sort_by = "created_at", topic) => {
+  const valiedTopic = [];
+  const valiedSort = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  let queryStr = `
+  SELECT articles.* ,COUNT(comments) AS comment_count
   FROM articles 
   LEFT JOIN comments 
-  ON articles.article_id = comments.article_id
-  GROUP BY articles.article_id
-  ORDER BY articles.created_at DESC;
-  `;
-  return db.query(queryStr).then((response) => {
-    return response.rows;
+  ON articles.article_id = comments.article_id `;
+
+  if (topic) {
+    queryStr += `  WHERE articles.topic = $1 `;
+    valiedTopic.push(topic);
+  }
+
+  if (valiedSort.includes(sort_by)) {
+    queryStr += `  GROUP BY articles.article_id   ORDER BY articles.${sort_by} `;
+    if (order === "desc" || order === "asc") {
+      queryStr += `${order}`;
+    } else {
+      return Promise.reject({ status: 400, msg: "bad request" });
+    }
+  } else {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
+
+  return db.query(queryStr, valiedTopic).then((response) => {
+    if (!response.rows.length) {
+      return Promise.reject({ status: 404, msg: "Not Found" });
+    } else {
+      return response.rows;
+    }
   });
 };

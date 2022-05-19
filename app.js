@@ -17,6 +17,7 @@ const { getAllUsers } = require("./controllers/users.controller");
 const {
   getAllComments,
   postComment,
+  deleteComment,
 } = require("./controllers/comments.controller");
 
 const app = express();
@@ -30,6 +31,8 @@ app.get("/api/users", getAllUsers);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id/comments", getAllComments);
 app.post("/api/articles/:article_id/comments", postComment);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Not Found" });
