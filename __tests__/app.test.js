@@ -347,11 +347,6 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
-
-//
-//
-//
-
 describe("GET /api/articels", () => {
   it("status:200, returns  all the articles ", () => {
     return request(app)
@@ -468,5 +463,29 @@ describe("GET /api/articels", () => {
       .then(({ body }) => {
         expect(body.msg).toBe("bad request");
       });
+  });
+});
+
+//
+//
+
+describe("DELETE api/comments/:comment_id", () => {
+  test("Status 204: Deletes the commetnt with givein id ", () => {
+    return request(app)
+      .delete("/api/comments/2")
+      .expect(204)
+      .then(({ body }) => expect(body).toEqual({}));
+  });
+  test("Status 404: return not found message when passing a comment id not found", () => {
+    return request(app)
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then(({ body }) => expect(body.msg).toBe("Not found"));
+  });
+  test("status 400: return bad request when passing unvalid id type", () => {
+    return request(app)
+      .delete("/api/comments/hello")
+      .expect(400)
+      .then(({ body }) => expect(body.msg).toBe("bad request"));
   });
 });
