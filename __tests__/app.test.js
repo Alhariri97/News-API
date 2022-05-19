@@ -261,6 +261,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(comment)
       .expect(201)
       .then(({ body }) => {
+        console.log(body);
         const { newComment } = body;
         expect(newComment).toEqual(returned);
       });
@@ -459,9 +460,9 @@ describe("GET /api/articels", () => {
   it("status:400, returns bad request if the topic qery did not match any topic", () => {
     return request(app)
       .get("/api/articles?sort_by=article_id&order=asc&topic=lllll")
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("bad request");
+        expect(body.msg).toBe("Not Found");
       });
   });
 });

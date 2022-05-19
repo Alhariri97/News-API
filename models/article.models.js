@@ -31,7 +31,7 @@ exports.updateArticle = (article_id, inc_votes) => {
   });
 };
 
-exports.fetchAllArticles = (order = "DESC", sort_by = "created_at", topic) => {
+exports.fetchAllArticles = (order = "desc", sort_by = "created_at", topic) => {
   const valiedTopic = [];
   const valiedSort = [
     "author",
@@ -55,7 +55,7 @@ exports.fetchAllArticles = (order = "DESC", sort_by = "created_at", topic) => {
 
   if (valiedSort.includes(sort_by)) {
     queryStr += `  GROUP BY articles.article_id   ORDER BY articles.${sort_by} `;
-    if (order === "DESC" || order === "asc") {
+    if (order === "desc" || order === "asc") {
       queryStr += `${order}`;
     } else {
       return Promise.reject({ status: 400, msg: "bad request" });
@@ -66,7 +66,7 @@ exports.fetchAllArticles = (order = "DESC", sort_by = "created_at", topic) => {
 
   return db.query(queryStr, valiedTopic).then((response) => {
     if (!response.rows.length) {
-      return Promise.reject({ status: 400, msg: "bad request" });
+      return Promise.reject({ status: 404, msg: "Not Found" });
     } else {
       return response.rows;
     }
