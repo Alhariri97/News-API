@@ -3,7 +3,6 @@ const app = require("../app");
 const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data");
-const res = require("express/lib/response");
 
 beforeEach(() => seed(testData));
 
@@ -268,6 +267,113 @@ describe("GET /api/articles/:article_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not Found");
+      });
+  });
+});
+
+//
+
+describe("POST /api/articles/:article_id/comments", () => {
+  it("Status:201: creates a comment and return the created comment", () => {
+    const comment = {
+      username: "butter_bridge",
+      body: "Nice article, I like it!",
+    };
+    const returned = {
+      author: "butter_bridge",
+      body: "Nice article, I like it!",
+      article_id: 1,
+      votes: 0,
+      comment_id: 19,
+      created_at: expect.any(String),
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(comment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body).toEqual(returned);
+      });
+  });
+
+  it("Status 404: user name di not match in user table", () => {
+    const comment = {
+      username: "Abdul",
+      body: "Good morning",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(comment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+
+  it("Status 404: article_id not found", () => {
+    const comment = {
+      username: "butter_bridge",
+      body: "Good morning ",
+    };
+    return request(app)
+      .post("/api/articles/299996999/comments")
+      .send(comment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+
+  it("Status 400: the new post doesnot have username key word", () => {
+    const comment = {
+      hello: "bainesface",
+      body: " Hello there",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(comment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("Status 400: the new post doesnot have body key word", () => {
+    const comment = {
+      username: "butter_bridge",
+      hello: " Hello there",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(comment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("Status 400: the new post does not have username value", () => {
+    const comment = {
+      username: "",
+      body: " Hello there",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(comment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("Status 400: the new post does not have body value", () => {
+    const comment = {
+      username: "butter_bridge",
+      body: "",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(comment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
       });
   });
 });
