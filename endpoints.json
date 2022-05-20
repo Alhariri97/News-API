@@ -9,6 +9,13 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "GET /api/users":{
+      "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+    "suers":  [{ "username": "'lurker'" }, { "username": "'rogersop'" }]
+    }
+  },
   "GET /api/articles": {
     "description": "serves an array of all topics",
     "queries": ["author", "topic", "sort_by", "order"],
@@ -23,5 +30,67 @@
         }
       ]
     }
+  },
+  "GET /api/aritcle:article_id":{
+    "description": "serves an array of has an object containing the article matches the given ID",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [
+        { "article_id": 4,
+          "title": "Student SUES Mitch!",
+          "topic": "mitch",
+          "author": "rogersop",
+          "body": "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+          "created_at": "2020-05-06T01:14:00.000Z",
+          "votes": 0,
+          "comment_count": "0"}
+      ]
+    }
+  },
+  "PATCH /api/article:article_id":{
+      "description": "serves an updates the votes on that artile by sent an object has the key inc_votes and the votes as its value you want to update the votes by and return the article after changing the votes value",
+    "queries": [],
+    "exampleResponse":{
+      "article_id": 4,
+      "title": "Student SUES Mitch!",
+      "topics": "mitch",
+      "author": "rogersop",
+      "body": "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+      "created_at": "2020-05-06T01:14:00.000Z",
+      "votes": 300
+    }
+  },
+  "GET /api/articles/:article_id/comments":{
+      "description": "serves an  array of all comments for the given article_id ",
+    "queries": [],
+    "exampleResponse": {
+    "commetns":  [ {
+      "comment_id": 11,
+      "body": "'Ambidextrous marsupial'",
+      "article_id": 3,
+      "author": "'icellusedkars'",
+      "votes": 0,
+      "created_at": "'2020-09-19T23:10:00.000Z'"
+    }]
+    }
+  },
+  "POST /api/articles/:article_id/comments":{
+  "description": "creates a comment and return the created comment as an value for a newComment key,  takes an object conesest of the username and body",
+"queries": [],
+"exampleResponse": {
+"commetns":  [ {
+  "comment_id": 11,
+  "body": "'Ambidextrous marsupial'",
+  "article_id": 1,
+  "author": "'icellusedkars'",
+  "votes": 0,
+  "created_at": "'2020-09-19T23:10:00.000Z'"
+}]
+}
+  },
+  "DELETE api/comments/:comment_id":{
+  "description": "Deletes the comment realated to the given id, responds with an empty obj",
+"queries": [],
+"exampleResponse":  [ {}]
   }
 }
