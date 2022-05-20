@@ -44,8 +44,5 @@ app.use(sqlErrors);
 app.use(costumErrors);
 
 app.use(serverErrors);
-const { PORT = 9090 } = process.env;
-
-app.listen(PORT, () => console.log(`Listening on ${PORT}...`));
 
 module.exports = app;
