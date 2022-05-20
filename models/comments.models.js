@@ -23,7 +23,6 @@ exports.creatComment = (username, body, article_id) => {
 };
 
 exports.removeComment = (comment_id) => {
-  console.log(comment_id, ".............");
   return db
     .query(
       `DELETE FROM comments

@@ -7,7 +7,17 @@ const testData = require("../db/data/test-data");
 beforeEach(() => seed(testData));
 
 afterAll(() => db.end());
-describe("GET /api/articels", () => {});
+
+describe("GET api", () => {
+  test("Status 200", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual(expect.objectContaining({}));
+      });
+  });
+});
 describe("GET /api/topics", () => {
   test("status:200, responds with an Array has 3 objects topics", () => {
     return request(app)
@@ -32,6 +42,152 @@ describe("GET /api/topics", () => {
   test("status:404, Returns a {Not found} message when paased an invalid path", () => {
     return request(app)
       .get("/api/topics/sls")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+});
+describe("GET /api/users", () => {
+  it("Status:200 ; responds wiht an array of objects , each object should have a username ", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeInstanceOf(Object);
+        expect(body.users).toBeInstanceOf(Array);
+        expect(body.users).toHaveLength(4);
+        body.users.forEach((user) => {
+          expect(user).toBeInstanceOf(Object);
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
+  test("status:404, Returns a {Not found} message when paased an invalid path", () => {
+    return request(app)
+      .get("/api/users/ls")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+});
+describe("GET /api/articels", () => {
+  it("status:200, returns  all the articles ", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeInstanceOf(Object);
+        expect(body.articles).toHaveLength(12);
+        body.articles.forEach((article) => {
+          expect(article).toBeInstanceOf(Object);
+          expect.objectContaining({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  it("status:200, returns all the articles sorted by date by default ", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  it("status:200, returns all the articles sorted by order query ", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: false,
+        });
+      });
+  });
+  it("status:200, returns all the articles sorted by votes query ", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toBeSortedBy("votes", {
+          descending: true,
+        });
+      });
+  });
+  it("status:200, returns all the articles sorted by votes query and order query together ", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toBeSortedBy("votes", {
+          descending: false,
+        });
+      });
+  });
+  it("status:200, returns all the articles sorted by article_id query and order query together ", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toBeSortedBy("article_id", {
+          descending: false,
+        });
+      });
+  });
+  it("status:400, returns bad request msg when passing wrong unvalid sort by query ", () => {
+    return request(app)
+      .get("/api/articles?sort_by=articlexx_id")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("status:400, returns bad request msg when passing wrong unvalid order query  ", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id&order=worm")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("status:200, returns the topics matches the query  ", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id&order=asc&topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeInstanceOf(Object);
+        expect(body.articles).toHaveLength(11);
+      });
+  });
+
+  it("status:400, returns bad request if the topic qery did not match any topic", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id&order=asc&topic=lllll")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not Found");
@@ -166,35 +322,6 @@ describe("PATCH /api/article:article_id", () => {
       });
   });
 });
-describe("GET /api/users", () => {
-  it("Status:200 ; responds wiht an array of objects , each object should have a username ", () => {
-    return request(app)
-      .get("/api/users")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body).toBeInstanceOf(Object);
-        expect(body.users).toBeInstanceOf(Array);
-        expect(body.users).toHaveLength(4);
-        body.users.forEach((user) => {
-          expect(user).toBeInstanceOf(Object);
-          expect(user).toEqual(
-            expect.objectContaining({
-              username: expect.any(String),
-            })
-          );
-        });
-      });
-  });
-
-  test("status:404, Returns a {Not found} message when paased an invalid path", () => {
-    return request(app)
-      .get("/api/users/ls")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not Found");
-      });
-  });
-});
 describe("GET /api/articles/:article_id/comments", () => {
   it("Status:200; responds with an array of comments for the given article_id ", () => {
     return request(app)
@@ -261,7 +388,6 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(comment)
       .expect(201)
       .then(({ body }) => {
-        console.log(body);
         const { newComment } = body;
         expect(newComment).toEqual(returned);
       });
@@ -348,134 +474,14 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
-describe("GET /api/articels", () => {
-  it("status:200, returns  all the articles ", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body).toBeInstanceOf(Object);
-        expect(body.articles).toHaveLength(12);
-        body.articles.forEach((article) => {
-          expect(article).toBeInstanceOf(Object);
-          expect.objectContaining({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            topic: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-            comment_count: expect.any(Number),
-          });
-        });
-      });
-  });
-  //
-  it("status:200, returns all the articles sorted by date by default ", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.articles).toBeInstanceOf(Array);
-        expect(body.articles).toHaveLength(12);
-        expect(body.articles).toBeSortedBy("created_at", {
-          descending: true,
-        });
-      });
-  });
-  it("status:200, returns all the articles sorted by order query ", () => {
-    return request(app)
-      .get("/api/articles?order=asc")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.articles).toBeInstanceOf(Array);
-        expect(body.articles).toHaveLength(12);
-        expect(body.articles).toBeSortedBy("created_at", {
-          descending: false,
-        });
-      });
-  });
-  it("status:200, returns all the articles sorted by votes query ", () => {
-    return request(app)
-      .get("/api/articles?sort_by=votes")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.articles).toBeInstanceOf(Array);
-        expect(body.articles).toHaveLength(12);
-        expect(body.articles).toBeSortedBy("votes", {
-          descending: true,
-        });
-      });
-  });
-  it("status:200, returns all the articles sorted by votes query and order query together ", () => {
-    return request(app)
-      .get("/api/articles?sort_by=votes&order=asc")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.articles).toBeInstanceOf(Array);
-        expect(body.articles).toHaveLength(12);
-        expect(body.articles).toBeSortedBy("votes", {
-          descending: false,
-        });
-      });
-  });
-  it("status:200, returns all the articles sorted by article_id query and order query together ", () => {
-    return request(app)
-      .get("/api/articles?sort_by=article_id&order=asc")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.articles).toBeInstanceOf(Array);
-        expect(body.articles).toHaveLength(12);
-        expect(body.articles).toBeSortedBy("article_id", {
-          descending: false,
-        });
-      });
-  });
-  it("status:400, returns bad request msg when passing wrong unvalid sort by query ", () => {
-    return request(app)
-      .get("/api/articles?sort_by=articlexx_id")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("bad request");
-      });
-  });
-  it("status:400, returns bad request msg when passing wrong unvalid order query  ", () => {
-    return request(app)
-      .get("/api/articles?sort_by=article_id&order=worm")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("bad request");
-      });
-  });
-  it("status:200, returns the topics matches the query  ", () => {
-    return request(app)
-      .get("/api/articles?sort_by=article_id&order=asc&topic=mitch")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body).toBeInstanceOf(Object);
-        expect(body.articles).toHaveLength(11);
-      });
-  });
-
-  it("status:400, returns bad request if the topic qery did not match any topic", () => {
-    return request(app)
-      .get("/api/articles?sort_by=article_id&order=asc&topic=lllll")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not Found");
-      });
-  });
-});
-
-//
-//
-
 describe("DELETE api/comments/:comment_id", () => {
   test("Status 204: Deletes the commetnt with givein id ", () => {
     return request(app)
       .delete("/api/comments/2")
       .expect(204)
-      .then(({ body }) => expect(body).toEqual({}));
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
   });
   test("Status 404: return not found message when passing a comment id not found", () => {
     return request(app)
