@@ -1,44 +1,19 @@
 const express = require("express");
-
-const { getTopics } = require("./controllers/topics.controller");
-const {
-  getArticleById,
-  patchArticleById,
-  getAllArticles,
-} = require("./controllers/article.controller.js");
+const api = require("./routes/index");
 
 const {
+  notFoundForAll,
   sqlErrors,
   costumErrors,
   serverErrors,
 } = require("./controllers/errors.controller.js");
 
-const { getAllUsers, getUser } = require("./controllers/users.controller");
-const {
-  getAllComments,
-  postComment,
-  deleteComment,
-} = require("./controllers/comments.controller");
-const { getAllEndPoints } = require("./controllers/api.controller");
-
 const app = express();
-
 app.use(express.json());
 
-app.get("/api/topics", getTopics);
-app.get("/api/articles/:article_id", getArticleById);
-app.patch("/api/articles/:article_id", patchArticleById);
-app.get("/api/users", getAllUsers);
-app.get("/api/users/:username", getUser);
-app.get("/api/articles", getAllArticles);
-app.get("/api/articles/:article_id/comments", getAllComments);
-app.post("/api/articles/:article_id/comments", postComment);
-app.delete("/api/comments/:comment_id", deleteComment);
-app.get("/api", getAllEndPoints);
+app.use("/api", api);
 
-app.all("/*", (req, res) => {
-  res.status(404).send({ msg: "Not Found" });
-});
+app.all("/*", notFoundForAll);
 
 app.use(sqlErrors);
 

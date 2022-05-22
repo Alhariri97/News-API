@@ -16,3 +16,7 @@ exports.serverErrors = (err, req, res, next) => {
   console.log(err);
   res.status(500).send({ msg: "internal server error" });
 };
+
+exports.notFoundForAll = (req, res) => {
+  res.status(404).send({ msg: "Not Found" });
+};
