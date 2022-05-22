@@ -7,7 +7,6 @@ exports.fetchAllComments = (article_id) => {
     return rows;
   });
 };
-
 exports.creatComment = (username, body, article_id) => {
   if (!body || !username) {
     return Promise.reject({ status: 400, msg: "bad request" });
@@ -21,7 +20,6 @@ exports.creatComment = (username, body, article_id) => {
       return results.rows[0];
     });
 };
-
 exports.removeComment = (comment_id) => {
   return db
     .query(
@@ -36,4 +34,28 @@ exports.removeComment = (comment_id) => {
       }
       return results.rows;
     });
+};
+exports.updateComment = async (comment_id, inc_votes) => {
+  if (inc_votes === -1 || inc_votes === 1) {
+    try {
+      const { rows } = await db.query(
+        "SELECT * FROM comments WHERE comment_id = $1",
+        [comment_id]
+      );
+      if (rows.length === 1) {
+        let queryString = `UPDATE comments SET votes = votes + 1 WHERE comment_id = $1 RETURNING *`;
+        if (inc_votes === -1) {
+          queryString = `UPDATE comments SET votes = votes - 1 WHERE comment_id = $1 RETURNING * `;
+        }
+        const { rows } = await db.query(queryString, [comment_id]);
+        return rows;
+      } else {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      }
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  } else {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
 };

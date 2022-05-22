@@ -6,6 +6,7 @@ const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 
 const testData = require("../db/data/test-data");
+const { updateComment } = require("../models/comments.models");
 
 beforeEach(() => {
   return seed(testData);
@@ -82,7 +83,6 @@ describe("GET /api/users", () => {
       });
   });
 });
-
 describe("GET /api/users/:username", () => {
   it("Status:200 ; responds wiht an object of the name given", () => {
     return request(app)
@@ -117,7 +117,6 @@ describe("GET /api/users/:username", () => {
       });
   });
 });
-
 describe("GET /api/articels", () => {
   it("status:200, returns  all the articles ", () => {
     return request(app)
@@ -535,5 +534,78 @@ describe("DELETE api/comments/:comment_id", () => {
       .delete("/api/comments/hello")
       .expect(400)
       .then(({ body }) => expect(body.msg).toBe("bad request"));
+  });
+});
+describe("Patch /api/comments/:comment_id", () => {
+  it("Status:200. Decrements the inc_votes by -1 and reutns the updated comment", () => {
+    return request(app)
+      .patch("/api/comments/17")
+      .send({ inc_votes: -1 })
+      .expect(200)
+      .then(({ body }) => {
+        const { updatedComment } = body;
+        expect(updatedComment).toEqual({
+          comment_id: 17,
+          body: "The owls are not what they seem.",
+          article_id: 9,
+          author: "icellusedkars",
+          votes: 19,
+          created_at: "2020-03-14T17:02:00.000Z",
+        });
+      });
+  });
+  it("Status:200. Incremetns the inc_votes by 1 and reutn the updated comment", () => {
+    return request(app)
+      .patch("/api/comments/17")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        const { updatedComment } = body;
+        expect(updatedComment).toEqual({
+          comment_id: 17,
+          body: "The owls are not what they seem.",
+          article_id: 9,
+          author: "icellusedkars",
+          votes: 21,
+          created_at: "2020-03-14T17:02:00.000Z",
+        });
+      });
+  });
+  it("Status:400. return bad request mesage when the no inc key", () => {
+    return request(app)
+      .patch("/api/comments/17")
+      .send({ Abdul: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("Status:400. return bad request message when inc_votes not 1 or -1", () => {
+    return request(app)
+      .patch("/api/comments/17")
+      .send({ inc_votes: 8 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("Status:404. return Not found message when no commetn id match", () => {
+    return request(app)
+      .patch("/api/comments/1010101010")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+
+  it("Status:404. return bad message when passing an invaled Id type", () => {
+    return request(app)
+      .patch("/api/comments/jdjdj")
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
   });
 });

@@ -1,5 +1,5 @@
 exports.sqlErrors = (err, req, res, next) => {
-  if (err.code === "22P02" || err.code === "23502") {
+  if (err.code === "22P02" || err.code === "23502" || err.code === "22P02") {
     res.status(400).send({ msg: "bad request" });
   } else if (err.code === "23503") {
     res.status(404).send({ msg: "Not Found" });
@@ -13,7 +13,6 @@ exports.costumErrors = (err, req, res, next) => {
 };
 
 exports.serverErrors = (err, req, res, next) => {
-  console.log(err);
   res.status(500).send({ msg: "internal server error" });
 };
 
