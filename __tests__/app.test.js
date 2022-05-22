@@ -82,6 +82,42 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("GET /api/users/:username", () => {
+  it("Status:200 ; responds wiht an object of the name given", () => {
+    return request(app)
+      .get("/api/users/rogersop")
+      .expect(200)
+      .then(({ body }) => {
+        const user = body;
+        expect(user).toBeInstanceOf(Object);
+        expect(user).toEqual({
+          username: "rogersop",
+          name: "paul",
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+        });
+      });
+  });
+
+  it("status:400, Returns a bad request message when paased an invalid name", () => {
+    return request(app)
+      .get("/api/users/true")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+  it("status:400, Returns a bad request message when paased an invalid name type", () => {
+    return request(app)
+      .get("/api/users/{}")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+});
+
 describe("GET /api/articels", () => {
   it("status:200, returns  all the articles ", () => {
     return request(app)

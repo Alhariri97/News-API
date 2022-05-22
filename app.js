@@ -13,7 +13,7 @@ const {
   serverErrors,
 } = require("./controllers/errors.controller.js");
 
-const { getAllUsers } = require("./controllers/users.controller");
+const { getAllUsers, getUser } = require("./controllers/users.controller");
 const {
   getAllComments,
   postComment,
@@ -29,6 +29,7 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.patch("/api/articles/:article_id", patchArticleById);
 app.get("/api/users", getAllUsers);
+app.get("/api/users/:username", getUser);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id/comments", getAllComments);
 app.post("/api/articles/:article_id/comments", postComment);
