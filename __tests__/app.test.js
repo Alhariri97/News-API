@@ -609,3 +609,33 @@ describe("Patch /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe.only("Post /api/articles", () => {
+  it("Status:201: creates a new article and returns the new created article ", () => {
+    const newArticle = {
+      author: "icellusedkars",
+      title: "Z",
+      body: "I'm the new article.",
+      topic: "mitch",
+    };
+    const returned = {
+      author: "icellusedkars",
+      title: "Z",
+      body: "I'm the new article.",
+      topic: "mitch",
+      article_id: 13,
+      votes: 0,
+      comment_count: "0",
+      created_at: expect.any(String),
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(201)
+      .then(({ body }) => {
+        const { createdArticle } = body;
+        console.log(createdArticle[0], "cjjjjjjjjjj");
+        expect(createdArticle[0]).toEqual(returned);
+      });
+  });
+});
