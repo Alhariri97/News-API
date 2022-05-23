@@ -75,6 +75,9 @@ exports.fetchAllArticles = (order = "desc", sort_by = "created_at", topic) => {
 };
 
 exports.createArticle = async (author, title, body, topic) => {
+  if (!author || !title || !body || !topic) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
   try {
     const checkForUser = await fetchUser(author);
     const checkForTopic = await db.query(

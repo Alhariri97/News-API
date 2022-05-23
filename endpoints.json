@@ -104,5 +104,20 @@
       "votes": 19,
       "created_at": "2020-03-14T17:02:00.000Z"
     }
+  },
+  "POST /api/articles":{
+  "description": "creates an article and return with the new article takes an object {author: shouls be a user  , title: ,body: , topic: should be a topic from the topics data base }",
+"queries": [],
+"exampleResponse": {
+"commetns":  [ {"author": "icellusedkars",
+  "title": "Z",
+  "body": "I'm the new article.",
+  "topic": "mitch",
+  "article_id": 13,
+  "votes": 0,
+  "comment_count": "0",
+  "created_at": "'2020-09-19T23:10:00.000Z'"
+}]
+}
   }
 }

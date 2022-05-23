@@ -610,7 +610,7 @@ describe("Patch /api/comments/:comment_id", () => {
   });
 });
 
-describe.only("Post /api/articles", () => {
+describe("Post /api/articles", () => {
   it("Status:201: creates a new article and returns the new created article ", () => {
     const newArticle = {
       author: "icellusedkars",
@@ -635,6 +635,51 @@ describe.only("Post /api/articles", () => {
       .then(({ body }) => {
         const { createdArticle } = body;
         expect(createdArticle[0]).toEqual(returned);
+      });
+  });
+  it("Status: 400; respods with a bad request msg if one of the keys is not valied", () => {
+    const newArticle = {
+      hello: "icellusedkars",
+      title: "Z",
+      body: "I'm the new article.",
+      topic: "mitch",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("Status: 404; respods with a not found msg if no such user in users data base", () => {
+    const newArticle = {
+      author: "Abdul",
+      title: "Z",
+      body: "I'm the new article.",
+      topic: "mitch",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+  it("Status: 404; respods with a not found msg if no such topic ", () => {
+    const newArticle = {
+      author: "Abdul",
+      title: "Z",
+      body: "I'm the new article.",
+      topic: "helllo",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
       });
   });
 });
