@@ -634,7 +634,6 @@ describe.only("Post /api/articles", () => {
       .expect(201)
       .then(({ body }) => {
         const { createdArticle } = body;
-        console.log(createdArticle[0], "cjjjjjjjjjj");
         expect(createdArticle[0]).toEqual(returned);
       });
   });

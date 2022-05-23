@@ -39,7 +39,6 @@ exports.postArticle = (req, res, next) => {
   const { author, title, body, topic } = req.body;
   createArticle(author, title, body, topic)
     .then((createdArticle) => {
-      console.log(createdArticle, "article <<<<<<<<");
       res.status(201).send({ createdArticle });
     })
     .catch(next);
