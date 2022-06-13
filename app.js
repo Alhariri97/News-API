@@ -1,6 +1,6 @@
 const express = require("express");
 const api = require("./routes/index");
-
+const cors = require("cors");
 const {
   notFoundForAll,
   sqlErrors,
@@ -9,6 +9,7 @@ const {
 } = require("./controllers/errors.controller.js");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.use("/api", api);
