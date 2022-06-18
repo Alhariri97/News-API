@@ -714,7 +714,7 @@ describe("Post /api/articles", () => {
   });
 });
 describe("edit", () => {
-  it.only("should ", () => {
+  it("should ", () => {
     const newArticle = {
       title: "Z",
       body: "I'm the Un updated articles article.",
