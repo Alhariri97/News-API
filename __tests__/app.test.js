@@ -725,7 +725,6 @@ describe("edit", () => {
       .send(newArticle)
       .expect(200)
       .then(({ body }) => {
-        console.log(body, "shet");
         expect(body.article[0]).toEqual({
           article_id: 3,
           title: "Z",
