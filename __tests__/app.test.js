@@ -83,6 +83,34 @@ describe("GET /api/users", () => {
       });
   });
 });
+//
+// describe.only("Post /api/users", () => {
+//   it("status:201, takes a username, name, avatar_url, email, password and respond with the new created user", () => {
+//     const newUser = {
+//       username: "dfdj",
+//       name: "abddul",
+//       avatar_url: "any",
+//       email: "abdul@gmail.com",
+//       password: "123",
+//     };
+//     const returned = {
+//       username: "dfdj",
+//       name: "abddul",
+//       avatar_url: "any",
+//       email: "abdul@gmail.com",
+//     };
+//     return request(app)
+//       .post("/api/users")
+//       .send(newUser)
+//       .expect(201)
+//       .then(({ body }) => {
+//         console.log(body, "hello data");
+//         const { createdUser } = body;
+//         expect(body).toEqual(returned);
+//       });
+//   });
+// });
+//
 describe("GET /api/users/:username", () => {
   it("Status:200 ; responds wiht an object of the name given", () => {
     return request(app)
@@ -90,12 +118,15 @@ describe("GET /api/users/:username", () => {
       .expect(200)
       .then(({ body }) => {
         const user = body;
+        console.log(user);
         expect(user).toBeInstanceOf(Object);
         expect(user).toEqual({
           username: "rogersop",
           name: "paul",
           avatar_url:
             "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+          email: null,
+          password: null,
         });
       });
   });
@@ -609,7 +640,6 @@ describe("Patch /api/comments/:comment_id", () => {
       });
   });
 });
-
 describe("Post /api/articles", () => {
   it("Status:201: creates a new article and returns the new created article ", () => {
     const newArticle = {
@@ -680,6 +710,31 @@ describe("Post /api/articles", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not Found");
+      });
+  });
+});
+describe("edit", () => {
+  it.only("should ", () => {
+    const newArticle = {
+      title: "Z",
+      body: "I'm the Un updated articles article.",
+      topic: "mitch",
+    };
+    return request(app)
+      .put("/api/articles/3")
+      .send(newArticle)
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body, "shet");
+        expect(body.article[0]).toEqual({
+          article_id: 3,
+          title: "Z",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "I'm the Un updated articles article.",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 0,
+        });
       });
   });
 });
