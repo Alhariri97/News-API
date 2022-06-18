@@ -11,7 +11,10 @@ const createTables = async () => {
   CREATE TABLE users (
     username VARCHAR PRIMARY KEY,
     name VARCHAR NOT NULL,
-    avatar_url VARCHAR
+    avatar_url VARCHAR,
+    email VARCHAR ,
+    password  VARCHAR,
+    UNIQUE (email)
   );`);
 
   await Promise.all([topicsTablePromise, usersTablePromise]);

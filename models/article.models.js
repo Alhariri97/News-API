@@ -31,7 +31,23 @@ exports.updateArticle = (article_id, inc_votes) => {
     return response.rows;
   });
 };
-
+exports.updateArticleBody = (article_id, topic, title, body) => {
+  let queryStr = `UPDATE articles
+    SET title =  $1,
+     body = $2,
+      topic = $3
+     WHERE article_id = $4 RETURNING * ;`;
+  return db
+    .query(queryStr, [title, body, topic, article_id])
+    .then((response) => {
+      if (!response.rows.length) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      }
+      return response.rows;
+    })
+    .catch((err) => console.log(err));
+};
+// title, body, topic
 exports.fetchAllArticles = (order = "desc", sort_by = "created_at", topic) => {
   const valiedTopic = [];
   const valiedSort = [

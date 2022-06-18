@@ -1,5 +1,7 @@
 const db = require("../db/connection.js");
 
+const bcrypt = require("bcrypt");
+
 exports.fetchAllUsers = () => {
   return db
     .query(`SELECT username FROM users;`)
@@ -21,5 +23,19 @@ exports.fetchUser = async (username) => {
     return rows;
   } catch (err) {
     return Promise.reject(err);
+  }
+};
+
+exports.createUser = async (username, name, avatar_url, email, password) => {
+  try {
+    const hashedPasswrod = await bcrypt.hash(password, 10);
+    const { rows } = await db.query(
+      `INSERT INTO users (username, name, avatar_url, email, password) VALUES ($1, $2 , $3, $4, $5); `,
+      [username, name, avatar_url, email, hashedPasswrod]
+    );
+    console.log(rows);
+    return rows;
+  } catch (err) {
+    console.log(err);
   }
 };
