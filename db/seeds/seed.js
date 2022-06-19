@@ -1,4 +1,5 @@
 const format = require("pg-format");
+const bcrypt = require("bcrypt");
 const {
   convertTimestampToDate,
   createRef,
@@ -20,13 +21,15 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     .then((result) => result.rows);
 
   const insertUsersQueryStr = format(
-    "INSERT INTO users ( username, name, avatar_url) VALUES %L RETURNING *;",
-    userData.map(({ username, name, avatar_url }) => [
+    "INSERT INTO users ( username, name, avatar_url ,password ) VALUES %L RETURNING *;",
+    userData.map(({ username, name, avatar_url, password }) => [
       username,
       name,
       avatar_url,
+      password,
     ])
   );
+
   const usersPromise = db
     .query(insertUsersQueryStr)
     .then((result) => result.rows);

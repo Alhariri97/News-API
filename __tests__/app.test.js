@@ -84,51 +84,60 @@ describe("GET /api/users", () => {
   });
 });
 //
-// describe.only("Post /api/users", () => {
-//   it("status:201, takes a username, name, avatar_url, email, password and respond with the new created user", () => {
-//     const newUser = {
-//       username: "dfdj",
-//       name: "abddul",
-//       avatar_url: "any",
-//       email: "abdul@gmail.com",
-//       password: "123",
-//     };
-//     const returned = {
-//       username: "dfdj",
-//       name: "abddul",
-//       avatar_url: "any",
-//       email: "abdul@gmail.com",
-//     };
-//     return request(app)
-//       .post("/api/users")
-//       .send(newUser)
-//       .expect(201)
-//       .then(({ body }) => {
-//         console.log(body, "hello data");
-//         const { createdUser } = body;
-//         expect(body).toEqual(returned);
-//       });
-//   });
-// });
-//
-describe("GET /api/users/:username", () => {
-  it("Status:200 ; responds wiht an object of the name given", () => {
+describe("Post /api/users/register", () => {
+  it("status:201, takes a username, name, avatar_url, email, password and respond with the new created user", () => {
+    const newUser = {
+      username: "dfdj",
+      name: "abddul",
+      avatar_url: "any",
+      email: "abdul@gmail.com",
+      password: "123",
+    };
+    const returned = {
+      username: "dfdj",
+      name: "abddul",
+      email: "abdul@gmail.com",
+    };
     return request(app)
-      .get("/api/users/rogersop")
-      .expect(200)
+      .post("/api/users/register")
+      .send(newUser)
+      .expect(201)
       .then(({ body }) => {
-        const user = body;
-        expect(user).toBeInstanceOf(Object);
-        expect(user).toEqual({
-          username: "rogersop",
-          name: "paul",
-          avatar_url:
-            "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
-          email: null,
-          password: null,
-        });
+        const { createdUser } = body;
+        expect(body).toEqual(returned);
       });
   });
+});
+//
+describe("GET /api/users/login", () => {
+  // it.only("Status:200 ; responds wiht an object of the name given", () => {
+  //   const userTryingToLogin = {
+  //     username: "rogersop",
+  //     password: "rogersop",
+  //   };
+  //   const returned = {
+  //     username: "dfdj",
+  //     name: "abddul",
+  //     email: "abdul@gmail.com",
+  //   };
+  //   return request(app)
+  //     .post("/api/users/login")
+  //     .send(userTryingToLogin)
+  //     .expect(200)
+  //     .then(({ body }) => {
+  //       console.log(body);
+  //       const user = body;
+  //       expect(user).toBeInstanceOf(Object);
+  //       expect(user).toEqual({
+  //         username: "rogersop",
+  //         name: "paul",
+  //         avatar_url:
+  //           "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+  //         email: null,
+  //         password: null,
+  //       });
+  //     });
+  // });
 
   it("status:400, Returns a bad request message when paased an invalid name", () => {
     return request(app)
@@ -566,173 +575,173 @@ describe("DELETE api/comments/:comment_id", () => {
       .then(({ body }) => expect(body.msg).toBe("bad request"));
   });
 });
-describe("Patch /api/comments/:comment_id", () => {
-  it("Status:200. Decrements the inc_votes by -1 and reutns the updated comment", () => {
-    return request(app)
-      .patch("/api/comments/17")
-      .send({ inc_votes: -1 })
-      .expect(200)
-      .then(({ body }) => {
-        const { updatedComment } = body;
-        expect(updatedComment).toEqual({
-          comment_id: 17,
-          body: "The owls are not what they seem.",
-          article_id: 9,
-          author: "icellusedkars",
-          votes: 19,
-          created_at: "2020-03-14T17:02:00.000Z",
-        });
-      });
-  });
-  it("Status:200. Incremetns the inc_votes by 1 and reutn the updated comment", () => {
-    return request(app)
-      .patch("/api/comments/17")
-      .send({ inc_votes: 1 })
-      .expect(200)
-      .then(({ body }) => {
-        const { updatedComment } = body;
-        expect(updatedComment).toEqual({
-          comment_id: 17,
-          body: "The owls are not what they seem.",
-          article_id: 9,
-          author: "icellusedkars",
-          votes: 21,
-          created_at: "2020-03-14T17:02:00.000Z",
-        });
-      });
-  });
-  it("Status:400. return bad request mesage when the no inc key", () => {
-    return request(app)
-      .patch("/api/comments/17")
-      .send({ Abdul: 1 })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("bad request");
-      });
-  });
-  it("Status:400. return bad request message when inc_votes not 1 or -1", () => {
-    return request(app)
-      .patch("/api/comments/17")
-      .send({ inc_votes: 8 })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("bad request");
-      });
-  });
-  it("Status:404. return Not found message when no commetn id match", () => {
-    return request(app)
-      .patch("/api/comments/1010101010")
-      .send({ inc_votes: 1 })
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not Found");
-      });
-  });
+// describe("Patch /api/comments/:comment_id", () => {
+//   it("Status:200. Decrements the inc_votes by -1 and reutns the updated comment", () => {
+//     return request(app)
+//       .patch("/api/comments/17")
+//       .send({ inc_votes: -1 })
+//       .expect(200)
+//       .then(({ body }) => {
+//         const { updatedComment } = body;
+//         expect(updatedComment).toEqual({
+//           comment_id: 17,
+//           body: "The owls are not what they seem.",
+//           article_id: 9,
+//           author: "icellusedkars",
+//           votes: 19,
+//           created_at: "2020-03-14T17:02:00.000Z",
+//         });
+//       });
+//   });
+//   it("Status:200. Incremetns the inc_votes by 1 and reutn the updated comment", () => {
+//     return request(app)
+//       .patch("/api/comments/17")
+//       .send({ inc_votes: 1 })
+//       .expect(200)
+//       .then(({ body }) => {
+//         const { updatedComment } = body;
+//         expect(updatedComment).toEqual({
+//           comment_id: 17,
+//           body: "The owls are not what they seem.",
+//           article_id: 9,
+//           author: "icellusedkars",
+//           votes: 21,
+//           created_at: "2020-03-14T17:02:00.000Z",
+//         });
+//       });
+//   });
+//   it("Status:400. return bad request mesage when the no inc key", () => {
+//     return request(app)
+//       .patch("/api/comments/17")
+//       .send({ Abdul: 1 })
+//       .expect(400)
+//       .then(({ body }) => {
+//         expect(body.msg).toBe("bad request");
+//       });
+//   });
+//   it("Status:400. return bad request message when inc_votes not 1 or -1", () => {
+//     return request(app)
+//       .patch("/api/comments/17")
+//       .send({ inc_votes: 8 })
+//       .expect(400)
+//       .then(({ body }) => {
+//         expect(body.msg).toBe("bad request");
+//       });
+//   });
+//   it("Status:404. return Not found message when no commetn id match", () => {
+//     return request(app)
+//       .patch("/api/comments/1010101010")
+//       .send({ inc_votes: 1 })
+//       .expect(404)
+//       .then(({ body }) => {
+//         expect(body.msg).toBe("Not Found");
+//       });
+//   });
 
-  it("Status:404. return bad message when passing an invaled Id type", () => {
-    return request(app)
-      .patch("/api/comments/jdjdj")
-      .send({ inc_votes: 1 })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("bad request");
-      });
-  });
-});
-describe("Post /api/articles", () => {
-  it("Status:201: creates a new article and returns the new created article ", () => {
-    const newArticle = {
-      author: "icellusedkars",
-      title: "Z",
-      body: "I'm the new article.",
-      topic: "mitch",
-    };
-    const returned = {
-      author: "icellusedkars",
-      title: "Z",
-      body: "I'm the new article.",
-      topic: "mitch",
-      article_id: 13,
-      votes: 0,
-      comment_count: "0",
-      created_at: expect.any(String),
-    };
-    return request(app)
-      .post("/api/articles")
-      .send(newArticle)
-      .expect(201)
-      .then(({ body }) => {
-        const { createdArticle } = body;
-        expect(createdArticle[0]).toEqual(returned);
-      });
-  });
-  it("Status: 400; respods with a bad request msg if one of the keys is not valied", () => {
-    const newArticle = {
-      hello: "icellusedkars",
-      title: "Z",
-      body: "I'm the new article.",
-      topic: "mitch",
-    };
-    return request(app)
-      .post("/api/articles")
-      .send(newArticle)
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("bad request");
-      });
-  });
-  it("Status: 404; respods with a not found msg if no such user in users data base", () => {
-    const newArticle = {
-      author: "Abdul",
-      title: "Z",
-      body: "I'm the new article.",
-      topic: "mitch",
-    };
-    return request(app)
-      .post("/api/articles")
-      .send(newArticle)
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not Found");
-      });
-  });
-  it("Status: 404; respods with a not found msg if no such topic ", () => {
-    const newArticle = {
-      author: "Abdul",
-      title: "Z",
-      body: "I'm the new article.",
-      topic: "helllo",
-    };
-    return request(app)
-      .post("/api/articles")
-      .send(newArticle)
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not Found");
-      });
-  });
-});
-describe("edit", () => {
-  it("should ", () => {
-    const newArticle = {
-      title: "Z",
-      body: "I'm the Un updated articles article.",
-      topic: "mitch",
-    };
-    return request(app)
-      .put("/api/articles/3")
-      .send(newArticle)
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.article[0]).toEqual({
-          article_id: 3,
-          title: "Z",
-          topic: "mitch",
-          author: "icellusedkars",
-          body: "I'm the Un updated articles article.",
-          created_at: "2020-11-03T09:12:00.000Z",
-          votes: 0,
-        });
-      });
-  });
-});
+//   it("Status:404. return bad message when passing an invaled Id type", () => {
+//     return request(app)
+//       .patch("/api/comments/jdjdj")
+//       .send({ inc_votes: 1 })
+//       .expect(400)
+//       .then(({ body }) => {
+//         expect(body.msg).toBe("bad request");
+//       });
+//   });
+// });
+// describe("Post /api/articles", () => {
+//   it("Status:201: creates a new article and returns the new created article ", () => {
+//     const newArticle = {
+//       author: "icellusedkars",
+//       title: "Z",
+//       body: "I'm the new article.",
+//       topic: "mitch",
+//     };
+//     const returned = {
+//       author: "icellusedkars",
+//       title: "Z",
+//       body: "I'm the new article.",
+//       topic: "mitch",
+//       article_id: 13,
+//       votes: 0,
+//       comment_count: "0",
+//       created_at: expect.any(String),
+//     };
+//     return request(app)
+//       .post("/api/articles")
+//       .send(newArticle)
+//       .expect(201)
+//       .then(({ body }) => {
+//         const { createdArticle } = body;
+//         expect(createdArticle[0]).toEqual(returned);
+//       });
+//   });
+//   it("Status: 400; respods with a bad request msg if one of the keys is not valied", () => {
+//     const newArticle = {
+//       hello: "icellusedkars",
+//       title: "Z",
+//       body: "I'm the new article.",
+//       topic: "mitch",
+//     };
+//     return request(app)
+//       .post("/api/articles")
+//       .send(newArticle)
+//       .expect(400)
+//       .then(({ body }) => {
+//         expect(body.msg).toBe("bad request");
+//       });
+//   });
+//   it("Status: 404; respods with a not found msg if no such user in users data base", () => {
+//     const newArticle = {
+//       author: "Abdul",
+//       title: "Z",
+//       body: "I'm the new article.",
+//       topic: "mitch",
+//     };
+//     return request(app)
+//       .post("/api/articles")
+//       .send(newArticle)
+//       .expect(404)
+//       .then(({ body }) => {
+//         expect(body.msg).toBe("Username Not found !");
+//       });
+//   });
+//   it("Status: 404; respods with a not found msg if no such topic ", () => {
+//     const newArticle = {
+//       author: "Abdul",
+//       title: "Z",
+//       body: "I'm the new article.",
+//       topic: "helllo",
+//     };
+//     return request(app)
+//       .post("/api/articles")
+//       .send(newArticle)
+//       .expect(404)
+//       .then(({ body }) => {
+//         expect(body.msg).toBe("Username Not found !");
+//       });
+//   });
+// });
+// describe("edit", () => {
+//   it("should ", () => {
+//     const newArticle = {
+//       title: "Z",
+//       body: "I'm the Un updated articles article.",
+//       topic: "mitch",
+//     };
+//     return request(app)
+//       .put("/api/articles/3")
+//       .send(newArticle)
+//       .expect(200)
+//       .then(({ body }) => {
+//         expect(body.article[0]).toEqual({
+//           article_id: 3,
+//           title: "Z",
+//           topic: "mitch",
+//           author: "icellusedkars",
+//           body: "I'm the Un updated articles article.",
+//           created_at: "2020-11-03T09:12:00.000Z",
+//           votes: 0,
+//         });
+//       });
+//   });
+// });

@@ -21,8 +21,8 @@ exports.postUser = (req, res) => {
 };
 
 exports.getUser = (req, res, next) => {
-  const { username } = req.params;
-  fetchUser(username)
+  const { username, password } = req.body;
+  fetchUser(username, password)
     .then(([user]) => {
       res.status(200).send(user);
     })

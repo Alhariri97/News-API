@@ -5,7 +5,9 @@ const {
   postUser,
 } = require("../../controllers/users.controller");
 
-usersRouter.route("/").get(getAllUsers).post(postUser);
-usersRouter.route("/:username").get(getUser);
+usersRouter.route("/").get(getAllUsers);
+usersRouter.route("/register").post(postUser);
+
+usersRouter.route("/login").post(getUser);
 
 module.exports = usersRouter;
