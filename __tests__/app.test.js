@@ -111,38 +111,38 @@ describe("Post /api/users/register", () => {
 });
 //
 describe("GET /api/users/login", () => {
-  it.only("Status:200 ; responds wiht an object of the name given", async () => {
-    // const he = async () => {
-    //   const hashedPasswrod = await bcrypt.hash("rogersop", 10);
-    // };
-    // he();
-    const userTryingToLogin = {
-      username: "butter_bridge",
-      password: "",
-    };
-    const returned = {
-      username: "dfdj",
-      name: "abddul",
-      email: "abdul@gmail.com",
-    };
-    return request(app)
-      .post("/api/users/login")
-      .send(userTryingToLogin)
-      .expect(200)
-      .then(({ body }) => {
-        console.log(body);
-        const user = body;
-        expect(user).toBeInstanceOf(Object);
-        expect(user).toEqual({
-          username: "rogersop",
-          name: "paul",
-          avatar_url:
-            "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
-          email: null,
-          password: null,
-        });
-      });
-  });
+  // it.only("Status:200 ; responds wiht an object of the name given", async () => {
+  //   // const he = async () => {
+  //   //   const hashedPasswrod = await bcrypt.hash("rogersop", 10);
+  //   // };
+  //   // he();
+  //   const userTryingToLogin = {
+  //     username: "butter_bridge",
+  //     password: "",
+  //   };
+  //   const returned = {
+  //     username: "dfdj",
+  //     name: "abddul",
+  //     email: "abdul@gmail.com",
+  //   };
+  //   return request(app)
+  //     .post("/api/users/login")
+  //     .send(userTryingToLogin)
+  //     .expect(200)
+  //     .then(({ body }) => {
+  //       console.log(body);
+  //       const user = body;
+  //       expect(user).toBeInstanceOf(Object);
+  //       expect(user).toEqual({
+  //         username: "rogersop",
+  //         name: "paul",
+  //         avatar_url:
+  //           "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+  //         email: null,
+  //         password: null,
+  //       });
+  //     });
+  // });
 
   it("status:400, Returns a bad request message when paased an invalid name", () => {
     return request(app)
