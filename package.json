@@ -26,7 +26,9 @@
     "husky": "^7.0.0",
     "jest": "^27.5.1",
     "jest-extended": "^2.0.0",
-    "pg-format": "^1.0.4"
+    "jest-sorted": "^1.0.14",
+    "pg-format": "^1.0.4",
+    "supertest": "^6.2.3"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -35,11 +37,9 @@
     "express": "^4.18.1",
     "express-flash": "^0.0.2",
     "express-session": "^1.17.3",
-    "jest-sorted": "^1.0.14",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "pg": "^8.7.3",
-    "supertest": "^6.2.3"
+    "pg": "^8.7.3"
   },
   "jest": {
     "setupFilesAfterEnv": [
