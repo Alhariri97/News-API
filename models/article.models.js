@@ -95,12 +95,15 @@ exports.createArticle = async (author, title, body, topic) => {
     return Promise.reject({ status: 400, msg: "bad request" });
   }
   try {
-    const checkForUser = await fetchUser(author);
+    const checkForUser = await db.query(
+      `SELECT * FROM users WHERE username = $1`,
+      [author]
+    );
     const checkForTopic = await db.query(
       `SELECT * FROM topics WHERE slug = $1`,
       [topic]
     );
-    if (checkForUser.length === 1 && checkForTopic.rows.length) {
+    if (checkForUser.rows.length && checkForTopic.rows.length) {
       try {
         const { rows } = await db.query(
           `INSERT INTO articles ( author, title, body, topic) VALUES ($1, $2 , $3, $4) RETURNING *`,
@@ -112,7 +115,7 @@ exports.createArticle = async (author, title, body, topic) => {
         return Promise.reject(err);
       }
     } else {
-      return Promise.reject({ status: 404, msg: "Not Found" });
+      return Promise.reject({ status: 404, msg: "Username Not found !" });
     }
   } catch (err) {
     return Promise.reject(err);
