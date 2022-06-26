@@ -7,13 +7,9 @@ const {
   costumErrors,
   serverErrors,
 } = require("./controllers/errors.controller.js");
-const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-};
+
 const app = express();
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 app.use("/api", api);
