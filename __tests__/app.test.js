@@ -84,7 +84,6 @@ describe("GET /api/users", () => {
       });
   });
 });
-//
 describe("Post /api/users/register", () => {
   it("status:201, takes a username, name, avatar_url, email, password and respond with the new created user", () => {
     const newUser = {
@@ -109,7 +108,6 @@ describe("Post /api/users/register", () => {
       });
   });
 });
-//
 describe("GET /api/users/login", () => {
   // it.only("Status:200 ; responds wiht an object of the name given", async () => {
   //   // const he = async () => {
