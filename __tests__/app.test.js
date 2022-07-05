@@ -477,6 +477,42 @@ describe("GET /api/articles/:article_id/comments", () => {
         });
       });
   });
+  it("Status:200; responds with limit and page queries ", () => {
+    return request(app)
+      .get("/api/articles/3/comments?limit=1&page=1")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(1);
+        comments.forEach((comment) => {
+          expect(comment).toBeInstanceOf(Object);
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+          });
+        });
+      });
+  });
+  it("Status 400: responds with bad requset when passing invalid limit or page not numper", () => {
+    return request(app)
+      .get("/api/articles/3/comments?limit=hello&page=string")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("Status 404: responds whith not found when passing an unfound page ", () => {
+    return request(app)
+      .get("/api/articles/3/comments?limit=20&page=90")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
   it("Status 400: when passing invalid id", () => {
     return request(app)
       .get("/api/articles/banana/comments")
