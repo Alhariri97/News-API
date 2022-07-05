@@ -1,9 +1,19 @@
 const db = require("../db/connection.js");
 
-exports.fetchAllComments = (article_id) => {
+exports.fetchAllComments = (article_id, limit = 10, page = 1) => {
+  if (isNaN(page) || isNaN(limit)) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
   let queryString = `SELECT * FROM comments WHERE article_id = $1`;
+  queryString += ` LIMIT ${limit} OFFSET (${page} - 1 ) * ${limit} ;`;
 
   return db.query(queryString, [article_id]).then(({ rows }) => {
+    if (page > 1) {
+      if (!rows.length) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      }
+    }
+
     return rows;
   });
 };

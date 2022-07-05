@@ -7,8 +7,12 @@ const {
 const { selectArticleById } = require("../models/article.models");
 
 exports.getAllComments = (req, res, next) => {
+  const { limit, page } = req.query;
   const { article_id } = req.params;
-  Promise.all([fetchAllComments(article_id), selectArticleById(article_id)])
+  Promise.all([
+    fetchAllComments(article_id, limit, page),
+    selectArticleById(article_id),
+  ])
     .then((data) => {
       res.status(200).send({ comments: data[0] });
     })
