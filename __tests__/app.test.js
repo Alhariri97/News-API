@@ -498,6 +498,32 @@ describe("PATCH /api/article:article_id", () => {
       });
   });
 });
+describe("DELETE /api/article:article_id", () => {
+  test("Status 200: Deletes the article with givein id ", () => {
+    return request(app)
+      .delete("/api/articles/2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  test("Status 404, responds with not found if it given a non found id ", () => {
+    return request(app)
+      .delete("/api/articles/399")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "Not Found" });
+      });
+  });
+  test("Status 400, responds with bad requet if the reqest whithout id", () => {
+    return request(app)
+      .delete("/api/articles/ll")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "bad request" });
+      });
+  });
+});
 describe("GET /api/articles/:article_id/comments", () => {
   it("Status:200; responds with an array of comments for the given article_id ", () => {
     return request(app)
