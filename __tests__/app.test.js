@@ -168,7 +168,7 @@ describe("GET /api/articels", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body).toBeInstanceOf(Object);
-        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toHaveLength(10);
         body.articles.forEach((article) => {
           expect(article).toBeInstanceOf(Object);
           expect.objectContaining({
@@ -189,10 +189,63 @@ describe("GET /api/articels", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toBeInstanceOf(Array);
-        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toHaveLength(10);
         expect(body.articles).toBeSortedBy("created_at", {
           descending: true,
         });
+      });
+  });
+  it("status:200, returns all the articles limited to 10, sorted by created_at and in descending order by default", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).toHaveLength(10);
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  it("status:200 , returns the page requested and the limit in the query", () => {
+    return request(app)
+      .get("/api/articles?limit=5&page=1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).toHaveLength(5);
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  it("status:200 , returns the page requested and the limit in the query", () => {
+    return request(app)
+      .get("/api/articles?page=2")
+      .expect(200)
+      .then(({ body }) => {
+        // Got back to because all the articles are 12 and we requested the second page
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).toHaveLength(2);
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  it("status:400 , returns bad request when sending not a number for the limit or the page", () => {
+    return request(app)
+      .get("/api/articles?limit=word&page=string")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("status:400 , returns Not found if requested a page not found", () => {
+    return request(app)
+      .get("/api/articles?limit=20&page=20")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
       });
   });
   it("status:200, returns all the articles sorted by order query ", () => {
@@ -201,7 +254,7 @@ describe("GET /api/articels", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toBeInstanceOf(Array);
-        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toHaveLength(10);
         expect(body.articles).toBeSortedBy("created_at", {
           descending: false,
         });
@@ -213,7 +266,7 @@ describe("GET /api/articels", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toBeInstanceOf(Array);
-        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toHaveLength(10);
         expect(body.articles).toBeSortedBy("votes", {
           descending: true,
         });
@@ -225,7 +278,7 @@ describe("GET /api/articels", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toBeInstanceOf(Array);
-        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toHaveLength(10);
         expect(body.articles).toBeSortedBy("votes", {
           descending: false,
         });
@@ -237,7 +290,7 @@ describe("GET /api/articels", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toBeInstanceOf(Array);
-        expect(body.articles).toHaveLength(12);
+        expect(body.articles).toHaveLength(10);
         expect(body.articles).toBeSortedBy("article_id", {
           descending: false,
         });
@@ -265,10 +318,9 @@ describe("GET /api/articels", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body).toBeInstanceOf(Object);
-        expect(body.articles).toHaveLength(11);
+        expect(body.articles).toHaveLength(10);
       });
   });
-
   it("status:400, returns bad request if the topic qery did not match any topic", () => {
     return request(app)
       .get("/api/articles?sort_by=article_id&order=asc&topic=lllll")
@@ -726,8 +778,8 @@ describe("Post /api/articles", () => {
       });
   });
 });
-describe("edit", () => {
-  it("should ", () => {
+describe("Patch: /api/articles/3", () => {
+  it("should return the  newly updated artilce ", () => {
     const newArticle = {
       title: "Z",
       body: "I'm the Un updated articles article.",

@@ -48,7 +48,13 @@ exports.updateArticleBody = (article_id, topic, title, body) => {
     .catch((err) => console.log(err));
 };
 // title, body, topic
-exports.fetchAllArticles = (order = "desc", sort_by = "created_at", topic) => {
+exports.fetchAllArticles = (
+  order = "desc",
+  sort_by = "created_at",
+  limit = 10,
+  page = 1,
+  topic
+) => {
   const valiedTopic = [];
   const valiedSort = [
     "author",
@@ -59,6 +65,9 @@ exports.fetchAllArticles = (order = "desc", sort_by = "created_at", topic) => {
     "votes",
     "comment_count",
   ];
+  if (isNaN(page) || isNaN(limit)) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
   let queryStr = `
   SELECT articles.* ,COUNT(comments) AS comment_count
   FROM articles 
@@ -74,6 +83,7 @@ exports.fetchAllArticles = (order = "desc", sort_by = "created_at", topic) => {
     queryStr += `  GROUP BY articles.article_id   ORDER BY articles.${sort_by} `;
     if (order === "desc" || order === "asc") {
       queryStr += `${order}`;
+      queryStr += ` LIMIT ${limit} OFFSET (${page} - 1 ) * ${limit}`;
     } else {
       return Promise.reject({ status: 400, msg: "bad request" });
     }

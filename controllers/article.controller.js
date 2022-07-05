@@ -39,8 +39,8 @@ exports.patchArticleBody = (req, res, next) => {
 };
 
 exports.getAllArticles = (req, res, next) => {
-  const { sort_by, order, topic } = req.query;
-  fetchAllArticles(order, sort_by, topic)
+  const { sort_by, order, topic, page, limit } = req.query;
+  fetchAllArticles(order, sort_by, limit, page, topic)
     .then((articles) => {
       res.status(200).send({ articles });
     })
