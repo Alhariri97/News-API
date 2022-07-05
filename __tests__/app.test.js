@@ -55,6 +55,48 @@ describe("GET /api/topics", () => {
       });
   });
 });
+describe("POST /api/topics", () => {
+  it("Status: 201, takes a slug and description, responses with the new created topic", () => {
+    let newtopic = {
+      slug: "any",
+      description: "it's just of tests",
+    };
+    return request(app)
+      .post("/api/topics/")
+      .send(newtopic)
+      .expect(201)
+      .then(({ body }) => {
+        const { createdTopic } = body;
+        expect(createdTopic).toEqual(newtopic);
+      });
+  });
+  it("Status: 400, responds with bad request if the slug  was not given ", () => {
+    let newtopic = {
+      slug: "",
+      description: "it's just of tests",
+    };
+    return request(app)
+      .post("/api/topics/")
+      .send(newtopic)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  it("Status: 400, responds with bad request if  description was not given ", () => {
+    let newtopic = {
+      slug: "test",
+      description: "",
+    };
+    return request(app)
+      .post("/api/topics/")
+      .send(newtopic)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});
 describe("GET /api/users", () => {
   it("Status:200 ; responds wiht an array of objects , each object should have a username ", () => {
     return request(app)
