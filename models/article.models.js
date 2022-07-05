@@ -131,3 +131,28 @@ exports.createArticle = async (author, title, body, topic) => {
     return Promise.reject(err);
   }
 };
+
+exports.removeArticleById = async (article_id) => {
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
+  try {
+    let { rows } = await db.query(
+      `SELECT articles FROM articles WHERE article_id = $1  ; `,
+      [article_id]
+    );
+    if (!rows.length) {
+      return Promise.reject({ status: 404, msg: "Not Found" });
+    }
+    let deleteArticle = await db.query(
+      `DELETE FROM articles WHERE article_id = $1  ; `,
+      [article_id]
+    );
+    if (deleteArticle.command === "DELETE" && !deleteArticle.rows.length) {
+      return;
+    }
+    return Promise.reject({ status: 500, msg: "internal server error" });
+  } catch (err) {
+    console.log(err);
+  }
+};
